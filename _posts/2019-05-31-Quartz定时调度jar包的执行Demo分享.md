@@ -14,7 +14,7 @@ tags:
 
 ​	该定时器Demo用于定时执行制定路径下的jar包的编译,也可以用于普通的任务调度.通过对任务的查询修改删除来管理整个列表文件.可以通关开启和关闭来更改jar的开始执行状态(开启后如果需要停止只能关闭或重启服务器才能生效,具体的解决办法还在改进中).相关的一整套的UI界面比较简略,可以进行二次开发,主要整合了JPA的分页查询,可以查看相关代码部分.
 
-![test.gif](https://upload-images.jianshu.io/upload_images/12057079-45628ea79747f5e4.gif?imageMogr2/auto-orient/strip)
+[![V0HVcn.md.gif](https://s2.ax1x.com/2019/06/07/V0HVcn.md.gif)](https://imgchr.com/i/V0HVcn)
 
 #### 3.测试路径
 
@@ -193,6 +193,6 @@ public class DynamicJob implements Job {
 
 #### 5.项目git地址
 
-<font color=#68228B  size=3>(喜欢记得点星支持哦,谢谢!)</font> 
+(喜欢记得点星支持哦,谢谢!)
 
-<font color=#EEB422   size=4>[https://github.com/fengcharly/quartz-jpa](https://github.com/fengcharly/quartz-jpa)</font>
+[https://github.com/fengcharly/quartz-jpa](https://github.com/fengcharly/quartz-jpa)
