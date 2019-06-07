@@ -14,11 +14,10 @@ date_format: '%Y-%m-%d'
 
 # Appreciating Your Boss
 #reward_comment: 坚持原创技术分享，您的支持将鼓励我继续创作！
-wechatpay: /assets/img/wechatpay.png
-alipay: /assets/img/alipay.png
+wechatpay: /assets/img/wechat_pay.png
+alipay: /assets/img/ali_pay.png
 
 # URL
-## If your site is put in a subdirectory, set url as 'http://yoursite.com' and baseurl as '/child'
 url:
 baseurl:
 permalink: pretty
@@ -251,7 +250,7 @@ social_icons:
 
 # Sidebar Avatar
 # in directory: /assets/images/avatar.gif
-avatar: /assets/images/blog_logo.jpg
+avatar: /assets/img/blog_logo.jpg
 
 
 # Table Of Contents in the Sidebar
@@ -371,7 +370,7 @@ custom_logo:
 # Available value:
 #    normal | night | night eighties | night blue | night bright
 # https://github.com/chriskempson/tomorrow-theme
-highlight_theme: night bright
+highlight_theme: normal
 
 
 # ---------------------------------------------------------------
