@@ -340,7 +340,7 @@ post_wordcount:
 
 # Wechat Subscriber
 wechat_subscriber:
-  enabled: true
+  enabled: false
   qcode: /assets/img/wechat.png
   description: "欢迎您扫一扫订阅我的微信公众号！"
 
