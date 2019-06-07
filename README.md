@@ -1,5 +1,5 @@
 MyBlog
-我的个人博客，不仅仅是技术文章！
+我的个人博客，学无止境!
 
 My personal blog, not just technical articles!
 
