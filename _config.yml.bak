@@ -215,7 +215,11 @@ font:
 # Value is the target link (E.g. GitHub: https://github.com/iissnan)
 #social:
   #LinkLabel: Link
-
+social:
+ GitHub: https://www.cnblogs.com/charlypage/
+ Gitee: https://gitee.com/zyzpp
+ QQ: http://shang.qq.com/wpa/qunwpa?idkey=8f453f49b00d4b0e159e3087bfc853ca1221ea8485c9a26c7a6809ef31ec753e
+ WeChat: /assets/img/wechat.png
 
 # Social Links Icons
 # Icon Mapping:
@@ -233,7 +237,11 @@ social_icons:
 
 # Sidebar Avatar
 # in directory: /assets/images/avatar.gif
+<<<<<<< HEAD
   avatar: /assets/images/blog_logo.jpg
+=======
+avatar: /assets/images/blog_logo.jpg
+>>>>>>> 54387686ac316cedef845d5f7f6adb7a89f6f2ef
 
 
 # Table Of Contents in the Sidebar
@@ -353,7 +361,7 @@ custom_logo:
 # Available value:
 #    normal | night | night eighties | night blue | night bright
 # https://github.com/chriskempson/tomorrow-theme
-highlight_theme: normal
+highlight_theme: night
 
 
 # ---------------------------------------------------------------
