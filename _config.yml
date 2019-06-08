@@ -340,8 +340,8 @@ post_wordcount:
 
 # Wechat Subscriber
 wechat_subscriber:
-  enabled: false
-  qcode: /assets/img/wechat.png
+  enabled: true
+  qcode: /assets/img/gongzhonghao.png
   description: "欢迎您扫一扫订阅我的微信公众号！"
 
 # Declare license on posts
