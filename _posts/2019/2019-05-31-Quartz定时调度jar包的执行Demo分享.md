@@ -15,7 +15,7 @@ description: Quartz框架的核心是调度器。调度器负责管理Quartz应�
 
 ​	该定时器Demo用于定时执行制定路径下的jar包的编译,也可以用于普通的任务调度.通过对任务的查询修改删除来管理整个列表文件.可以通关开启和关闭来更改jar的开始执行状态(开启后如果需要停止只能关闭或重启服务器才能生效,具体的解决办法还在改进中).相关的一整套的UI界面比较简略,可以进行二次开发,主要整合了JPA的分页查询,可以查看相关代码部分.
 
-[![V0HVcn.md.gif](https://s2.ax1x.com/2019/06/07/V0HVcn.md.gif)](https://imgchr.com/i/V0HVcn)
+![V0HVcn.gif](https://s2.ax1x.com/2019/06/07/V0HVcn.gif)
 
 #### 3.测试路径
 
