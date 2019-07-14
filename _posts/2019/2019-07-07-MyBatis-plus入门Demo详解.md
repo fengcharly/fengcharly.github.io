@@ -1,5 +1,5 @@
 ---
-title: MyBatis-plus入门Demo详解
+title: MyBatis-Plus入门Demo详解
 categories:
  - MyBatis
 tags:
