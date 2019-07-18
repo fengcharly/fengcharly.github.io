@@ -4,7 +4,7 @@ categories:
  - Memcache
 tags:
  - 后端开发
-description: MyBatis-Plus（简称 MP）是一个 MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，为简化开发、提高效率而生...
+description: Memcached是danga.com开发的分布式内存对象缓存系统，所谓分布式，意味着它不是本地的，而是基于网络连接完成服务...
 ---
 
 ## 一、什么是Memcached？
