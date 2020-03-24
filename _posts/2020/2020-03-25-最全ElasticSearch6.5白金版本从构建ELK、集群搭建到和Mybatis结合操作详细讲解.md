@@ -15,7 +15,7 @@ description: 解压相关的ElasticSearch6.5.1的tar包到目录下,如果我们
 
 ```java
 欢迎start:
-https://github.com/fengcharly/elasticSearch-sql/tree/file
+https://github.com/fengcharly/elasticsearch-sql-jdbc/tree/file
 ```
 
 ##### 关于破解:
@@ -559,7 +559,7 @@ public class EsDruidDataSourceConfig {
 相关Git项目地址如下:
 
 ```java
-https://github.com/fengcharly/elasticSearch-sql
+https://github.com/fengcharly/elasticsearch-sql-jdbc
 ```
 
 #### 5.部署Kibana
