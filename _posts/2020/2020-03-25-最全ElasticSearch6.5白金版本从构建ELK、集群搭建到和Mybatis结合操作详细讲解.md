@@ -317,12 +317,6 @@ ElasticSearch的bin目录下面:
         </dependency>
 
         <dependency>
-            <groupId>com.meizu</groupId>
-            <artifactId>meizu-framework-datasource</artifactId>
-            <version>1.2</version>
-        </dependency>
-
-        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
         </dependency>
