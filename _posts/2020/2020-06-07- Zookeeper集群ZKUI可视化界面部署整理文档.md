@@ -4,7 +4,7 @@ categories:
  - Zookeeper
 tags:
  - 后端开发
-description: server.0、server.1、server.2 为 zk 集群中三个 node 的信息，定义格式为 hostname:port1:port2，其中 port1 是 node 间通信使用的端口，port2 是node 选举使用的端口，需确保三台主机的这两个端口都是互通的...
+description: zk 集群中三个 node 的信息，定义格式为 hostname:port1:port2，其中 port1 是 node 间通信使用的端口，port2 是node 选举使用的端口，需确保三台主机的这两个端口都是互通的...
 ---
 
 #### 1.环境说明
