@@ -7,8 +7,6 @@ tags:
 description: RPC是远程过程调用（Remote Procedure Call）的缩写形式。RPC的概念与技术早在1981年由Nelson提出...
 ---
 
-# 
-
 #### 1.RPC是什么
 
 ​		RPC是远程过程调用（Remote Procedure Call）的缩写形式。RPC的概念与技术早在1981年由Nelson提出。
@@ -57,8 +55,8 @@ Java RMI
 ​		既然RPC的核心是代理，那我们在设计RPC框架的时候有必要考虑：使用JDK动态代理还是用AOP？RPC还用到了共享接口，序列化也是我们需要考量的：XML、文本、JSON、还是二进制？传输协议：基于TCP还是HTTP？结构如下所示：
 
   		1. 共享：POJO实体类定义，接口定义。
-  		2. RPC是基于接口的远程服务调用。Java下，代理可以选择动态代理，或者AOP实现。
-  		3. 序列化和反序列化的选择：
+    		2. RPC是基于接口的远程服务调用。Java下，代理可以选择动态代理，或者AOP实现。
+      		3. 序列化和反序列化的选择：
        - 语言原生的序列化，RMI，Remoting
        - 二进制平台无关，Hessian，avro，kyro，fst等
        - 文本，JSON、XML等
