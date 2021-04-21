@@ -1,10 +1,10 @@
 ---
-title: 使用 PowerMockRunner 和 Mockito 编写单元测试用例
+title: 使用 PowerMockRunner和 Mockito编写单元测试用例
 categories:
  - Java后端
 tags:
  - 后端开发
-description: RPC本质上就是“像调用本地方法一样调用远程方法”，主要涉及到客户端和服务端的数据的传输...
+description: 单元测试可以提高测试开发的效率，减少代码错误率，提高代码健壮性，提高代码质量。在Spring框架中常用的两种测试框架：PowerMockRunner和SpringRunner两个单元测试，鉴于SpringRunner启动的一系列依赖和数据连接的问题，推荐使用PowerMockRunner，这样能有效的提高测试的效率，并且其提供的API能覆盖的场景广泛，使用方便，可谓是Java单元测试之模拟利器...
 ---
 
 单元测试可以提高测试开发的效率，减少代码错误率，提高代码健壮性，提高代码质量。在Spring框架中常用的两种测试框架：PowerMockRunner和SpringRunner两个单元测试，鉴于SpringRunner启动的一系列依赖和数据连接的问题，推荐使用PowerMockRunner，这样能有效的提高测试的效率，并且其提供的API能覆盖的场景广泛，使用方便，可谓是Java单元测试之模拟利器。
