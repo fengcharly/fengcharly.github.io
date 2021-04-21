@@ -1,313 +1,186 @@
 ---
-title: RPC服务(二)使用HTTP实现一个RPC服务
+title: 使用 PowerMockRunner 和 Mockito 编写单元测试用例
 categories:
- - RPC
+ - Java后端
 tags:
  - 后端开发
 description: RPC本质上就是“像调用本地方法一样调用远程方法”，主要涉及到客户端和服务端的数据的传输...
 ---
 
-#### 1.RPC服务框架的基本结构
+单元测试可以提高测试开发的效率，减少代码错误率，提高代码健壮性，提高代码质量。在Spring框架中常用的两种测试框架：PowerMockRunner和SpringRunner两个单元测试，鉴于SpringRunner启动的一系列依赖和数据连接的问题，推荐使用PowerMockRunner，这样能有效的提高测试的效率，并且其提供的API能覆盖的场景广泛，使用方便，可谓是Java单元测试之模拟利器。
 
-RPC本质上就是“像调用本地方法一样调用远程方法”，主要涉及到客户端和服务端的数据的传输，整体的RPC的框架服务就如下所示：
+#### 1. PowerMock是什么？
 
-![6zcIYD.png](https://z3.ax1x.com/2021/03/27/6zcIYD.png)
+PowerMock是一个Java模拟框架，可用于解决通常认为很难甚至无法测试的测试问题。使用PowerMock，可以模拟静态方法，删除静态初始化程序，允许模拟而不依赖于注入，等等。PowerMock通过在执行测试时在运行时修改字节码来完成这些技巧。PowerMock还包含一些实用程序，可让您更轻松地访问对象的内部状态。
 
-#### 2.使用HTTP实现服务的组成部分
+举个例子，你在使用Junit进行单元测试时，并不想让测试数据进入数据库，怎么办？这个时候就可以使用PowerMock，拦截数据库操作，并模拟返回参数。
 
-1. ##### 注册中心：zookeeper
+#### 2. PowerMock包引入
 
-2. ##### 序列化方式：json
-
-3. ##### 网络通信：http协议
-
-4. ##### 代理方式：jdk动态代理
-
-#### 3.项目结构
-
-```java
-├─rpc-http-api
-│  ├─src
-│  │  └─main
-│  │      ├─java
-│  │      │  └─com
-│  │      │      └─home
-│  │      │          └─api
-│  │      └─resources
-│  └─target
-│      ├─classes
-│      │  └─com
-│      │      └─home
-│      │          └─api
-│      └─generated-sources
-│          └─annotations
-├─rpc-http-consumer
-│  ├─src
-│  │  └─main
-│  │      ├─java
-│  │      │  └─com
-│  │      │      └─home
-│  │      │          └─consumer
-│  │      └─resources
-│  └─target
-│      ├─classes
-│      │  └─com
-│      │      └─home
-│      │          └─consumer
-│      └─generated-sources
-│          └─annotations
-├─rpc-http-core
-│  ├─src
-│  │  └─main
-│  │      ├─java
-│  │      │  ├─client
-│  │      │  └─com
-│  │      │      └─home
-│  │      │          └─core
-│  │      │              ├─entity
-│  │      │              └─server
-│  │      └─resources
-│  └─target
-│      ├─classes
-│      │  ├─client
-│      │  └─com
-│      │      └─home
-│      │          └─core
-│      │              ├─entity
-│      │              └─server
-│      └─generated-sources
-│          └─annotations
-└─rpc-http-provider
-    ├─src
-    │  └─main
-    │      ├─java
-    │      │  └─com
-    │      │      └─home
-    │      │          └─provider
-    │      │              ├─config
-    │      │              └─controller
-    │      └─resources
-    └─target
-        ├─classes
-        │  └─com
-        │      └─home
-        │          └─provider
-        │              ├─config
-        │              └─controller
-        └─generated-sources
-            └─annotations
+```xml
+<!-- 单元测试 依赖-->
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-core</artifactId>
+            <version>2.0.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>2.23.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>2.0.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito2</artifactId>
+            <version>2.0.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.jsonzou</groupId>
+            <artifactId>jmockdata</artifactId>
+            <version>4.3.0</version>
+        </dependency>
+        <!-- 单元测试 依赖-->
 ```
 
-##### ① RPC服务的提供者:
-
-服务的提供者在启动的时候回进行初始化，在zookeeper上面创建的节点名称如类的权限定名+IP+下划线+端口号，节点的值为："provider"。
+#### 3. 重要注解说明
 
 ```java
-@Slf4j
-@SpringBootApplication
-public class RpcHttpProviderApplication {
-
-
-    public static void main(String[] args) throws Exception {
-        // 启动前进行初始化
-        init();
-        SpringApplication.run(RpcHttpProviderApplication.class, args);
-    }
-
-    private static void init() throws Exception {
-        // zookeeper 新建节点
-        RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
-        CuratorFramework client = CuratorFrameworkFactory.builder().
-                connectString("localhost:2181").
-                namespace("rpc-http").
-                retryPolicy(retryPolicy)
-                .build();
-        client.start();
-
-        // 建立用户服务的节点 全限定名的方式 com.home.api.UserService
-        String userServiceName = "com.home.api.UserService";
-        registerService(client, userServiceName);
-
-    }
-
-    /**
-     * 向zookeeper注册相应的服务节点
-     *
-     * @param client
-     * @param serviceName
-     */
-    private static void registerService(CuratorFramework client, String serviceName) throws Exception {
-
-        // 用户提供者相关定义
-        ServiceProviderDesc userServiceProviderDesc = ServiceProviderDesc.builder()
-                .host(InetAddress.getLocalHost().getHostAddress())
-                .port(8081)
-                .serviceClass(serviceName)
-                .build();
-
-        // 创建节点
-        try {
-            if (null == client.checkExists().forPath("/" + serviceName)) {
-                client.create().withMode(CreateMode.PERSISTENT).forPath("/" + serviceName, "service".getBytes());
-            }
-        } catch (Exception e) {
-            log.error("创建提供者节点异常:{}", e.getMessage());
-        }
-
-
-        // 创建服务的临时节点
-        client.create().withMode(CreateMode.EPHEMERAL).
-                forPath( "/" + serviceName + "/" + userServiceProviderDesc.getHost() + "_" + userServiceProviderDesc.getPort(), "provider".getBytes());
-
-    }
-}
-
+@RunWith(PowerMockRunner.class) // 告诉JUnit使用PowerMockRunner进行测试
+@PrepareForTest({RandomUtil.class}) // 所有需要测试的类列在此处，适用于模拟final类或有final, private, static, native方法的类
+@PowerMockIgnore("javax.management.*") //为了解决使用powermock后，提示classloader错误
 ```
 
-##### ② RPC服务的消费者:
+#### 4. 使用示例
 
-服务的消费者通过JDK代理的方式使用http请求提供者的接口，获取JSON数据并解析：
+##### 4.1 模拟接口返回
+
+首先对接口进行mock，然后录制相关行为
 
 ```java
-/**
- * 服务的消费者
- */
-@Slf4j
-@SpringBootApplication
-public class RpcHttpConsumerApplication {
+InterfaceToMock mock = Powermockito.mock(InterfaceToMock.class)
 
-    /**
-     * 消费端进行消费
-     */
-    public static void main(String[] args) {
+Powermockito.when(mock.method(Params…)).thenReturn(value)
 
-        UserService userService = RpcClient.create(UserService.class, "http://localhost:8081/");
-        User user = userService.findById(1);
-        log.info("find user id=1 from server: {}", user.getName());
-        
-    }
-}
+Powermockito.when(mock.method(Params..)).thenThrow(Exception)
 ```
 
-主要的RpcClient代理类：
+##### 4.2 设置对象的private属性
+
+需要使用whitebox向class或者对象中赋值。
+
+如我们已经对接口尽心了mock，现在需要将此mock加入到对象中，可以采用如下方法：
 
 ```java
-/**
- * RPC客户端
- */
-@Slf4j
-public final class RpcClient {
-
-    static {
-        ParserConfig.getGlobalInstance().addAccept("com.home");
-    }
-
-    public static <T, filters> T createFromRegistry(final Class<T> serviceClass, final String zkUrl, Router router, LoadBalancer loadBalance, Filter filter) {
-
-        // curator Provider list from zk
-        List<String> invokers = new ArrayList<>();
-        // 1. 简单：从zk拿到服务提供的列表
-        // 2. 挑战：监听zk的临时节点，根据事件更新这个list（注意，需要做个全局map保持每个服务的提供者List）
-
-        // router, loadbalance
-        List<String> urls = router.route(invokers);
-        String url = loadBalance.select(urls);
-
-        return (T) create(serviceClass, url, filter);
-
-    }
-
-    public static <T> T create(final Class<T> serviceClass, final String url, Filter... filters) {
-
-        // JDK动态代理
-        return (T) Proxy.newProxyInstance(
-                RpcClient.class.getClassLoader(),
-                new Class[]{serviceClass},
-                new RpcInvocationHandler(serviceClass, url, filters)
-        );
-
-    }
-
-
-    public static class RpcInvocationHandler implements InvocationHandler {
-
-        public static final MediaType JSONTYPE = MediaType.get("application/json; charset=utf-8");
-
-        private final Class<?> serviceClass;
-        private final String url;
-        private final Filter[] filters;
-
-        public <T> RpcInvocationHandler(Class<T> serviceClass, String url, Filter... filters) {
-            this.serviceClass = serviceClass;
-            this.url = url;
-            this.filters = filters;
-        }
-
-        // 可以尝试，自己去写对象序列化，二进制还是文本的，，，rpc是xml自定义序列化、反序列化
-        // int byte char float double long bool
-        // [], data class
-        @Override
-        public Object invoke(Object proxy, Method method, Object[] params) throws Throwable {
-
-            RpcRequest request = new RpcRequest();
-            request.setServiceClass(this.serviceClass.getName());
-            request.setMethod(method.getName());
-            request.setParams(params);
-
-            if (null != filters) {
-                for (Filter filter : filters) {
-                    if (!filter.filter(request)) {
-                        return null;
-                    }
-                }
-            }
-
-            RpcResponse response = post(request, url);
-            return JSON.parse(response.getResult().toString());
-        }
-
-        /**
-         * 请求提供者的接口获取相关数据信息
-         *
-         * @param req
-         * @param url
-         * @return
-         * @throws IOException
-         */
-        private RpcResponse post(RpcRequest req, String url) throws IOException {
-            String reqJson = JSON.toJSONString(req);
-
-            log.info("req json: {}",reqJson);
-
-            // 1.可以复用client
-            // 2.尝试使用httpclient或者netty client
-            OkHttpClient client = new OkHttpClient();
-            final Request request = new Request.Builder()
-                    .url(url)
-                    .post(RequestBody.create(JSONTYPE, reqJson))
-                    .build();
-            String respJson = client.newCall(request).execute().body().string();
-
-            log.info("resp json: {}",respJson);
-            return JSON.parseObject(respJson, RpcResponse.class);
-        }
-    }
-}
+Whitebox.setInternalState(Object object, String fieldname, Object… value);
 ```
 
-请求响应的结果如下：
+其中object为需要设置属性的静态类或对象。
+
+##### 4.3 模拟构造函数
+
+对于模拟构造函数，也即当出现new InstanceClass()时可以将此构造函数拦截并替换结果为我们需要的mock对象。
+
+注意：使用时需要加入标记：
 
 ```java
- [main] INFO client.RpcClient - req json: {"method":"findById","params":[1],"serviceClass":"com.home.api.UserService"}
- [main] INFO client.RpcClient - resp json: {"result":"{\"@type\":\"com.home.api.User\",\"id\":1,\"name\":\"rpc time: 2021-03-06T12:12:16.697\"}","status":true,"exception":null}
- [main] INFO com.home.consumer.RpcHttpConsumerApplication - find user id=1 from server: rpc time: 2021-03-06T12:12:16.697
+@RunWith(PowerMockRunner.class)
+
+@PrepareForTest({ InstanceClass.class })
+
+@PowerMockIgnore("javax.management.\*")
+
+Powermockito.whenNew(InstanceClass.class).thenReturn(Object value)
 ```
 
-#### 4. 项目地址:
+##### 4.4 模拟静态方法
+
+模拟静态方法类似于模拟构造函数，也需要加入注释标记。
 
 ```java
-https://github.com/fengcharly/rpc-demo.git
+@RunWith(PowerMockRunner.class)
+
+@PrepareForTest({ StaticClassToMock.class })
+
+@PowerMockIgnore("javax.management.\*")
+
+Powermockito.mockStatic(StaticClassToMock.class);
+
+Powermockito.when(StaticClassToMock.method(Object.. params)).thenReturn(Object value)
 ```
+
+##### 4.5 模拟final方法
+
+Final方法的模拟类似于模拟静态方法。
+
+```java
+@RunWith(PowerMockRunner.class)
+
+@PrepareForTest({ FinalClassToMock.class })
+
+@PowerMockIgnore("javax.management.\*")
+
+Powermockito.mockStatic(FinalClassToMock.class);
+
+Powermockito.when(StaticClassToMock.method(Object.. params)).thenReturn(Object value)
+```
+
+##### 4.6 模拟静态类
+
+模拟静态类类似于模拟静态方法。
+
+##### 4.7 使用spy方法避免执行被测类中的成员函数
+
+如被测试类为：TargetClass，想要屏蔽的方法为targetMethod.
+
+```java
+1） PowerMockito.spy(TargetClass.class);
+
+2） Powemockito.when(TargetClass.targetMethod()).doReturn()
+
+3） 注意加入
+
+@RunWith(PowerMockRunner.class)
+
+@PrepareForTest(DisplayMoRelationBuilder.class)
+
+@PowerMockIgnore("javax.management.*")
+```
+
+##### 4.8 参数匹配器
+
+有时我们在处理doMethod(Param param)时，不想进行精确匹配，这时可以使用Mockito提供的模糊匹配方式。
+
+如：Mockito.anyInt()，Mockito.anyString()
+
+##### 4.9 处理public void型的静态方法
+
+```java
+Powermockito.doNothing.when(T class2mock, String method, <T>… params>
+```
+
+#### 5. 单元测试用例可选清单
+
+输入数据验证：这些检查通常可以对输入到应用程序系统中的数据采用。
+
+- 必传项测试
+- 唯一字段值测试
+- 空值测试
+- 字段只接受允许的字符
+- 负值测试
+- 字段限于字段长度规范
+- 不可能的值
+- 垃圾值测试
+- 检查字段之间的依赖性
+- 等效类划分和边界条件测试
+- 错误和异常处理测试
 
 
 
