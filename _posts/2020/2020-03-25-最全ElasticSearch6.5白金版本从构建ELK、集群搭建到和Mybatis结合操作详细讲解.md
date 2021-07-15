@@ -4,7 +4,7 @@ categories:
  - 搜索引擎
 tags:
  - 后端开发
-description: 解压相关的ElasticSearch6.5.1的tar包到目录下,如果我们需要使用JDBC来连接的话是需要到白金版以上的,分享出本人将基础版破解为白金版的包给大家...
+description: 使用的ElasticSearch版本为6.5.1，如果我们需要使用JDBC来连接的话是需要到白金版以上的，请务必保证版本正确可用...
 ---
 
 #### 1.安装ElasticSearch6.5.1
